@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class SingleNoteController : NoteControllerBase
 {
+	[SerializeField] AudioClip clipHit; // 効果音
+
 	void Update()
 	{
 		SetTransform();
@@ -44,6 +46,8 @@ public class SingleNoteController : NoteControllerBase
 		// 判定がMissでないとき(BAD以内のとき)
 		if (judgementType != JudgementType.Miss)
 		{
+			// 効果音再生
+			AudioSource.PlayClipAtPoint(clipHit, transform.position);
 			// 未処理ノーツ一覧から削除
 			PlayerController.ExistingNoteControllers.Remove(
 				GetComponent<NoteControllerBase>()

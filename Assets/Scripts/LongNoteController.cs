@@ -9,6 +9,8 @@ public class LongNoteController : NoteControllerBase
 	[SerializeField] Color32 processedColorEdges; // 処理中の始点終点の色
 	[SerializeField] Color32 processedColorTrail; // 処理中の軌跡の色
 
+	[SerializeField] AudioClip clipHit; // 効果音
+
 	void Update()
 	{
 		SetTransform();
@@ -84,8 +86,12 @@ public class LongNoteController : NoteControllerBase
 	{
 		// コンソールに判定を表示
 		Debug.Log(judgementType);
+
+		// 判定がMissでないとき(BAD以内のとき)
 		if (judgementType != JudgementType.Miss)
 		{
+			// 効果音再生
+			AudioSource.PlayClipAtPoint(clipHit, transform.position);
 			// 処理中フラグを付ける
 			isProcessed = true;
 			// 色を変更
@@ -100,6 +106,8 @@ public class LongNoteController : NoteControllerBase
 	{
 		// コンソールに判定を表示
 		Debug.Log(judgementType);
+		// 効果音再生
+		AudioSource.PlayClipAtPoint(clipHit, transform.position);
 		// 処理中フラグを解除
 		isProcessed = false;
 		//リストから削除
