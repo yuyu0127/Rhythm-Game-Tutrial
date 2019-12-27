@@ -93,3 +93,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7b2f6043304004c991b11b00c24a77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isProcessed: 0
+  clipHit: {fileID: 8300000, guid: 5c6cd3982e8ce7942b6b82855864d610, type: 3}

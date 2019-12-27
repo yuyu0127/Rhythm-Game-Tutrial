@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement; // シーン遷移に必要
 
 public class PlayerController : MonoBehaviour
 {
@@ -29,11 +30,6 @@ public class PlayerController : MonoBehaviour
 
 		// 未処理ノーツ一覧を初期化
 		ExistingNoteControllers = new List<NoteControllerBase>();
-
-		// 読み込む譜面があるディレクトリのパス
-		var beatmapDirectory = Application.dataPath + "/../Beatmaps";
-		// Beatmapクラスのインスタンスを作成
-		beatmap = new Beatmap(beatmapDirectory + "/sample3.bms");
 
 		// デバッグ用にテンポ変化をコンソールに出力
 		foreach (var tempoChange in beatmap.tempoChanges)
@@ -69,7 +65,8 @@ public class PlayerController : MonoBehaviour
 		// 譜面停止中にスペースを押したとき
 		if (!isPlaying && Input.GetKeyDown(KeyCode.Space))
 		{
-			// 譜面再生isPlaying = true;
+			// 譜面再生
+			isPlaying = true;
 			// 指定した秒数待って音源再生
 			audioSource.PlayScheduled(
 				AudioSettings.dspTime + startOffset + beatmap.audioOffset
@@ -81,6 +78,13 @@ public class PlayerController : MonoBehaviour
 			// startSecを更新し続ける
 			startSec = Time.time;
 		}
+		// Escキーを押すと選曲画面に戻る
+		if (Input.GetKeyDown(KeyCode.Escape))
+		{
+			// シーン読み込み
+			SceneManager.LoadScene("SelectScene");
+		}
+
 		// 秒数を更新
 		CurrentSec = Time.time - startOffset - startSec;
 

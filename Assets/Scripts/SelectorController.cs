@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement; // シーン遷移に必要
 using UnityEngine.UI;
 
 public class SelectorController : MonoBehaviour
@@ -67,6 +68,17 @@ public class SelectorController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             ChangeScrollSpeed(scrollSpeed + 0.1f);
+        }
+
+        // 決定処理
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            // スクロール速度を設定
+            PlayerController.ScrollSpeed = scrollSpeed;
+            // 譜面を設定
+            PlayerController.beatmap = new Beatmap(beatmapPaths[selectedIndex]);
+            // シーン切り替え
+            SceneManager.LoadScene("GameScene");
         }
     }
 
