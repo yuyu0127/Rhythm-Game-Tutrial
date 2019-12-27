@@ -19,35 +19,12 @@ public class PlayerController : MonoBehaviour
 		CurrentSec = 0f;
 		CurrentBeat = 0f;
 
-		// TODO: ここで譜面の読み込みを行う
-		// 現段階では手打ち
-
+		// 読み込む譜面があるディレクトリのパス
+		var beatmapDirectory = Application.dataPath + "/../Beatmaps";
 		// Beatmapクラスのインスタンスを作成
-		beatmap = new Beatmap();
+		beatmap = new Beatmap(beatmapDirectory + "/sample1.bms");
 
-		// ノーツ配置情報を設定
-		beatmap.noteProperties = new List<NoteProperty>
-		{
-			new NoteProperty(0, 0, 0, NoteType.Single),
-			new NoteProperty(1, 1, 1, NoteType.Single),
-			new NoteProperty(2, 3, 2, NoteType.Long),
-			new NoteProperty(3, 4, 1, NoteType.Long),
-			new NoteProperty(4, 8, 0, NoteType.Long),
-			new NoteProperty(4, 5, 4, NoteType.Long),
-			new NoteProperty(5, 6, 3, NoteType.Long),
-			new NoteProperty(6, 7, 2, NoteType.Single),
-			new NoteProperty(7, 8, 3, NoteType.Single),
-			new NoteProperty(8, 9, 4, NoteType.Single)
-		};
-
-		// テンポ変化を設定
-		beatmap.tempoChanges = new List<TempoChange>
-		{
-			new TempoChange(0, 60f),
-			new TempoChange(2, 120f),
-			new TempoChange(4, 60f),
-			new TempoChange(6, 120f)
-		};
+		// 直打ちしていたノーツは配置情報を削除した
 
 		// ノーツの生成を行う
 		foreach (var noteProperty in beatmap.noteProperties)

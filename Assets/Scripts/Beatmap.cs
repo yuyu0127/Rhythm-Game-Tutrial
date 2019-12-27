@@ -6,6 +6,14 @@ public class Beatmap
 	public List<NoteProperty> noteProperties = new List<NoteProperty>();
 	public List<TempoChange> tempoChanges = new List<TempoChange>();
 
+	// (コンストラクタ) BMSファイルを読み込む
+	public Beatmap(string filePath)
+	{
+		var bmsLoader = new BmsLoader(filePath);
+		noteProperties = bmsLoader.noteProperties;
+		tempoChanges = bmsLoader.tempoChanges;
+	}
+
 	// 指定されたテンポで、 beatをsecへ変換する
 	public static float ToSecWithFixedTempo(float beat, float tempo)
 	{
