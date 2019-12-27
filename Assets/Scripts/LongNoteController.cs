@@ -8,6 +8,13 @@ public class LongNoteController : NoteControllerBase
 
 	void Update()
 	{
+		SetTransform();
+		CheckMiss();
+	}
+
+	// ノーツの座標設定
+	private void SetTransform()
+	{
 		// 始点の座標（beatBeginによる指定）
 		Vector2 positionBegin = new Vector2();
 		positionBegin.x = noteProperty.lane - 2;
@@ -32,5 +39,66 @@ public class LongNoteController : NoteControllerBase
 		Vector2 scale = objTrail.transform.localScale;
 		scale.y = positionEnd.y - positionBegin.y;
 		objTrail.transform.localScale = scale;
+	}
+
+	// 見逃し検出
+	private void CheckMiss()
+	{
+		// 処理中でない状態で始点が判定ラインを通過し、
+		// BADの判定幅よりも離れるとノーツを削除
+		if (!isProcessed &&
+			noteProperty.secBegin - PlayerController.CurrentSec <
+			-JudgementManager.JudgementWidth[JudgementType.Bad])
+		{
+			// リストから削除
+			PlayerController.ExistingNoteControllers.Remove(
+				GetComponent<NoteControllerBase>()
+			);
+			// GameObject自体も削除
+			Destroy(gameObject);
+		}
+
+		// 処理中の状態で終点が判定ラインを通過し、
+		// BADの判定幅よりも離れるとノーツを削除
+		if (isProcessed &&
+			noteProperty.secEnd - PlayerController.CurrentSec <
+			-JudgementManager.JudgementWidth[JudgementType.Bad])
+		{
+			// 処理中フラグを解除
+			isProcessed = false;
+			// リストから削除
+			PlayerController.ExistingNoteControllers.Remove(
+				GetComponent<NoteControllerBase>()
+			);
+			// GameObject自体も削除
+			Destroy(gameObject);
+		}
+	}
+
+	// キーが押された時
+	public override void OnKeyDown(JudgementType judgementType)
+	{
+		// コンソールに判定を表示
+		Debug.Log(judgementType);
+		if (judgementType != JudgementType.Miss)
+		{
+			// 処理中フラグを付ける
+			isProcessed = true;
+		}
+	}
+
+	// キーが離された時
+	public override void OnKeyUp(JudgementType judgementType)
+	{
+		// コンソールに判定を表示
+		Debug.Log(judgementType);
+		// 処理中フラグを解除
+		isProcessed = false;
+		//リストから削除
+		PlayerController.ExistingNoteControllers.Remove(
+			GetComponent<NoteControllerBase>()
+		);
+		// GameObject自体も削除
+		Destroy(gameObject);
 	}
 }
