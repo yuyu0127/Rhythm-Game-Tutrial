@@ -6,6 +6,9 @@ public class LongNoteController : NoteControllerBase
 	[SerializeField] GameObject objTrail; // 軌跡部分のGameObject
 	[SerializeField] GameObject objEnd; // 終点部分のGameObject
 
+	[SerializeField] Color32 processedColorEdges; // 処理中の始点終点の色
+	[SerializeField] Color32 processedColorTrail; // 処理中の軌跡の色
+
 	void Update()
 	{
 		SetTransform();
@@ -18,7 +21,8 @@ public class LongNoteController : NoteControllerBase
 		// 始点の座標（beatBeginによる指定）
 		Vector2 positionBegin = new Vector2();
 		positionBegin.x = noteProperty.lane - 2;
-		positionBegin.y =
+		positionBegin.y = isProcessed ?
+			objBegin.transform.position.y :
 			(noteProperty.beatBegin - PlayerController.CurrentBeat) *
 			PlayerController.ScrollSpeed;
 		objBegin.transform.localPosition = positionBegin;
@@ -84,6 +88,10 @@ public class LongNoteController : NoteControllerBase
 		{
 			// 処理中フラグを付ける
 			isProcessed = true;
+			// 色を変更
+			objBegin.GetComponent<SpriteRenderer>().color = processedColorEdges;
+			objEnd.GetComponent<SpriteRenderer>().color = processedColorEdges;
+			objTrail.GetComponent<SpriteRenderer>().color = processedColorTrail;
 		}
 	}
 
