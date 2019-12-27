@@ -28,6 +28,8 @@ public class SingleNoteController : NoteControllerBase
 		if (noteProperty.secBegin - PlayerController.CurrentSec <
 			-JudgementManager.JudgementWidth[JudgementType.Bad])
 		{
+			// ミス処理
+			EvaluationManager.OnMiss();
 			// 未処理ノーツ一覧から削除
 			PlayerController.ExistingNoteControllers.Remove(
 				GetComponent<NoteControllerBase>()
@@ -46,6 +48,8 @@ public class SingleNoteController : NoteControllerBase
 		// 判定がMissでないとき(BAD以内のとき)
 		if (judgementType != JudgementType.Miss)
 		{
+			// ヒット処理（スコア・コンボ数などを変更）
+			EvaluationManager.OnHit(judgementType);
 			// 効果音再生
 			AudioSource.PlayClipAtPoint(clipHit, transform.position);
 			// 未処理ノーツ一覧から削除

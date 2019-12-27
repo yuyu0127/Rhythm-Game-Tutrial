@@ -56,6 +56,9 @@ public class LongNoteController : NoteControllerBase
 			noteProperty.secBegin - PlayerController.CurrentSec <
 			-JudgementManager.JudgementWidth[JudgementType.Bad])
 		{
+			// ミス処理（2回呼び出す）
+			EvaluationManager.OnMiss(); // 始点の分
+			EvaluationManager.OnMiss(); // 終点の分
 			// リストから削除
 			PlayerController.ExistingNoteControllers.Remove(
 				GetComponent<NoteControllerBase>()
@@ -70,6 +73,8 @@ public class LongNoteController : NoteControllerBase
 			noteProperty.secEnd - PlayerController.CurrentSec <
 			-JudgementManager.JudgementWidth[JudgementType.Bad])
 		{
+			// ミス処理
+			EvaluationManager.OnMiss();
 			// 処理中フラグを解除
 			isProcessed = false;
 			// リストから削除
@@ -90,6 +95,8 @@ public class LongNoteController : NoteControllerBase
 		// 判定がMissでないとき(BAD以内のとき)
 		if (judgementType != JudgementType.Miss)
 		{
+			// ヒット処理
+			EvaluationManager.OnHit(judgementType);
 			// 効果音再生
 			AudioSource.PlayClipAtPoint(clipHit, transform.position);
 			// 処理中フラグを付ける
@@ -104,6 +111,18 @@ public class LongNoteController : NoteControllerBase
 	// キーが離された時
 	public override void OnKeyUp(JudgementType judgementType)
 	{
+		// 判定がBad以内のとき
+		if (judgementType != JudgementType.Miss)
+		{
+			// ヒット処理
+			EvaluationManager.OnHit(judgementType);
+		}
+		// 判定がMissの時(MISS)
+		else
+		{
+			// ミス処理
+			EvaluationManager.OnMiss();
+		}
 		// コンソールに判定を表示
 		Debug.Log(judgementType);
 		// 効果音再生
