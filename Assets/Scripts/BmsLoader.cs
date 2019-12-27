@@ -20,8 +20,12 @@ public class BmsLoader
 		@"#(BPM) (.*)",
 		@"#(BPM[0-9A-Z]{2}) (.*)",
 		@"#(PLAYLEVEL) (.*)",
-		@"#(RANK) (.*)"
+		@"#(RANK) (.*)",
+		@"#(WAV[0-9A-Z]{2}) (.*)" // #WAV00~ZZに対応
 	};
+
+	// 音源再生オフセット
+	public float audioOffset = 0f;
 
 	// BMS上のレーン番号とゲーム内のレーン番号の対応
 	private static Dictionary<char, int> LanePairs = new Dictionary<char, int>
@@ -131,7 +135,8 @@ public class BmsLoader
 			else if (dataType == DataType.SingleNote ||
 				dataType == DataType.LongNote ||
 				dataType == DataType.DirectTempoChange ||
-				dataType == DataType.IndexedTempoChange)
+				dataType == DataType.IndexedTempoChange ||
+				dataType == DataType.Bgm)
 			{
 				// 小節の開始beat (measureLengthsの先頭からmeasureNum個分の合計)
 				float measureStartBeat = measureLengths.Take(measureNum).Sum();
@@ -209,6 +214,12 @@ public class BmsLoader
 						// テンポ変化情報をtempoChangesに追加
 						tempoChanges.Add(new TempoChange(beat, tempo));
 					}
+					// BGMの場合
+					else if (dataType == DataType.Bgm)
+					{
+						// 音源再生オフセット(秒単位) を設定
+						audioOffset = Beatmap.ToSec(beat, tempoChanges);
+					}
 				}
 			}
 		}
@@ -228,6 +239,12 @@ public class BmsLoader
 		{
 			// 拍子変化
 			return DataType.MeasureChange;
+		}
+		// チャンネルが01のとき
+		else if (channel == "01")
+		{
+			// BGM
+			return DataType.Bgm;
 		}
 		// チャンネルが03のとき
 		else if (channel == "03")
@@ -263,5 +280,6 @@ public enum DataType
 	LongNote, // ロングノーツ
 	DirectTempoChange, // BPM直接指定型テンポ変化
 	IndexedTempoChange, // BPMインデックス指定型BPM変化
-	MeasureChange // 拍子変化
+	MeasureChange, // 拍子変化
+	Bgm // BGM
 }

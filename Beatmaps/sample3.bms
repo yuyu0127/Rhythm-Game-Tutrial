@@ -1,0 +1,21 @@
+
+*---------------------- HEADER FIELD
+
+#PLAYER 1
+#GENRE Sample Genre
+#TITLE Sample3
+#ARTIST Sample Artist
+#BPM 120
+#PLAYLEVEL 100
+#RANK 1
+
+
+#LNTYPE 1
+
+#WAV01 music.wav
+
+
+*---------------------- MAIN DATA FIELD
+
+
+#00001:01

@@ -1,17 +1,32 @@
 using System.Collections.Generic;
+using System.IO; // FileInfoを使うために必須
 using System.Linq;
 
 public class Beatmap
 {
 	public List<NoteProperty> noteProperties = new List<NoteProperty>();
 	public List<TempoChange> tempoChanges = new List<TempoChange>();
+	public string audioFilePath = ""; // 楽曲ファイルの絶対パス
+	public float audioOffset; // 音源再生オフセット
 
 	// (コンストラクタ) BMSファイルを読み込む
 	public Beatmap(string filePath)
 	{
+		// BMSファイルの入っているフォルダの絶対パス
+		var bmsDirectory = new FileInfo(filePath).DirectoryName;
 		var bmsLoader = new BmsLoader(filePath);
+
 		noteProperties = bmsLoader.noteProperties;
 		tempoChanges = bmsLoader.tempoChanges;
+
+		// 音源が指定されているとき
+		if (bmsLoader.headerData.ContainsKey("WAV01"))
+		{
+			// 楽曲ファイルの絶対パス（フォルダ名とファイル名をつなげる）
+			audioFilePath = bmsDirectory + "/" + bmsLoader.headerData["WAV01"];
+		}
+		// 音源再生オフセットを設定
+		audioOffset = bmsLoader.audioOffset;
 	}
 
 	// 指定されたテンポで、 beatをsecへ変換する
