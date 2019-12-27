@@ -71,6 +71,13 @@ public class BmsLoader
 
 		// テンポ変化データを時系列順に並び替え
 		tempoChanges = tempoChanges.OrderBy(x => x.beat).ToList();
+
+		// 各ノーツに対して、secの設定を行う
+		foreach (var noteProperty in noteProperties)
+		{
+			noteProperty.secBegin = Beatmap.ToSec(noteProperty.beatBegin, tempoChanges);
+			noteProperty.secEnd = Beatmap.ToSec(noteProperty.beatEnd, tempoChanges);
+		}
 	}
 
 	// ヘッダー行のみ読み込む

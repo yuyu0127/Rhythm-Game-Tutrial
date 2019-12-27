@@ -9,6 +9,8 @@ public class PlayerController : MonoBehaviour
 	public static float ScrollSpeed = 1.0f; // 譜面のスクロール速度
 	public static float CurrentSec = 0f; // 現在の経過時間(秒)
 	public static float CurrentBeat = 0f; // 現在の経過時間(beat)
+	// まだ判定処理で消えていないノーツ一覧
+	public static List<NoteControllerBase> ExistingNoteControllers;
 
 	public static Beatmap beatmap; // 譜面データを管理する
 	private float startOffset = 1.0f; // 譜面のオフセット(秒)
@@ -18,6 +20,9 @@ public class PlayerController : MonoBehaviour
 		// 値を初期化
 		CurrentSec = 0f;
 		CurrentBeat = 0f;
+
+		// 未処理ノーツ一覧を初期化
+		ExistingNoteControllers = new List<NoteControllerBase>();
 
 		// 読み込む譜面があるディレクトリのパス
 		var beatmapDirectory = Application.dataPath + "/../Beatmaps";
@@ -44,6 +49,8 @@ public class PlayerController : MonoBehaviour
 					objNote = Instantiate(prefabLongNote);
 					break;
 			}
+			// ノーツ生成時に未処理ノーツ一覧に追加
+			ExistingNoteControllers.Add(objNote.GetComponent<NoteControllerBase>());
 			objNote.GetComponent<NoteControllerBase>().noteProperty = noteProperty;
 		}
 	}
