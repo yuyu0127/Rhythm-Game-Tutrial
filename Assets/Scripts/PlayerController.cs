@@ -4,6 +4,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
 	[SerializeField] private GameObject prefabSingleNote; // 生成するPrefab
+	[SerializeField] private GameObject prefabLongNote; // 生成するPrefab
 
 	public static float ScrollSpeed = 1.0f; // 譜面のスクロール速度
 	public static float CurrentSec = 0f; // 現在の経過時間(秒)
@@ -29,14 +30,14 @@ public class PlayerController : MonoBehaviour
 		{
 			new NoteProperty(0, 0, 0, NoteType.Single),
 			new NoteProperty(1, 1, 1, NoteType.Single),
-			new NoteProperty(2, 2, 2, NoteType.Single),
-			new NoteProperty(3, 3, 1, NoteType.Single),
-			new NoteProperty(4, 4, 0, NoteType.Single),
-			new NoteProperty(4, 4, 4, NoteType.Single),
-			new NoteProperty(5, 5, 3, NoteType.Single),
-			new NoteProperty(6, 6, 2, NoteType.Single),
-			new NoteProperty(7, 7, 3, NoteType.Single),
-			new NoteProperty(8, 8, 4, NoteType.Single)
+			new NoteProperty(2, 3, 2, NoteType.Long),
+			new NoteProperty(3, 4, 1, NoteType.Long),
+			new NoteProperty(4, 8, 0, NoteType.Long),
+			new NoteProperty(4, 5, 4, NoteType.Long),
+			new NoteProperty(5, 6, 3, NoteType.Long),
+			new NoteProperty(6, 7, 2, NoteType.Single),
+			new NoteProperty(7, 8, 3, NoteType.Single),
+			new NoteProperty(8, 9, 4, NoteType.Single)
 		};
 
 		// テンポ変化を設定
@@ -52,7 +53,16 @@ public class PlayerController : MonoBehaviour
 		foreach (var noteProperty in beatmap.noteProperties)
 		{
 			// beatmapのnotePropertiesの各要素の情報からGameObjectを生成
-			var objNote = Instantiate(prefabSingleNote);
+			GameObject objNote = null;
+			switch (noteProperty.noteType)
+			{
+				case NoteType.Single:
+					objNote = Instantiate(prefabSingleNote);
+					break;
+				case NoteType.Long:
+					objNote = Instantiate(prefabLongNote);
+					break;
+			}
 			objNote.GetComponent<NoteControllerBase>().noteProperty = noteProperty;
 		}
 	}

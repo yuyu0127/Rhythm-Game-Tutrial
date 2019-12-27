@@ -328,3 +328,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabSingleNote: {fileID: 2590049665027717337, guid: ea285132044ac2e4d9fefb84326edbdc,
     type: 3}
+  prefabLongNote: {fileID: 1840427449670765938, guid: 2e90a61f3ccc1174a84ecd8ba5b803dc,
+    type: 3}
