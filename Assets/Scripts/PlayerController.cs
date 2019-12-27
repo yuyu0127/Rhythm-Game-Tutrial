@@ -22,9 +22,13 @@ public class PlayerController : MonoBehaviour
 		// 読み込む譜面があるディレクトリのパス
 		var beatmapDirectory = Application.dataPath + "/../Beatmaps";
 		// Beatmapクラスのインスタンスを作成
-		beatmap = new Beatmap(beatmapDirectory + "/sample1.bms");
+		beatmap = new Beatmap(beatmapDirectory + "/sample2.bms");
 
-		// 直打ちしていたノーツは配置情報を削除した
+		// デバッグ用にテンポ変化をコンソールに出力
+		foreach (var tempoChange in beatmap.tempoChanges)
+		{
+			Debug.Log(tempoChange.beat + ": " + tempoChange.tempo);
+		}
 
 		// ノーツの生成を行う
 		foreach (var noteProperty in beatmap.noteProperties)

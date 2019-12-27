@@ -115,10 +115,16 @@ public class BmsLoader
 			{
 				return;
 			}
-			// ノーツ
+			// 拍子変化
+			if (dataType == DataType.MeasureChange)
+			{
+				measureLengths[measureNum] = Convert.ToSingle(body) * 4f;
+			}
+			// ノーツ・BPM変化
 			else if (dataType == DataType.SingleNote ||
-				dataType == DataType.LongNote
-			)
+				dataType == DataType.LongNote ||
+				dataType == DataType.DirectTempoChange ||
+				dataType == DataType.IndexedTempoChange)
 			{
 				// 小節の開始beat (measureLengthsの先頭からmeasureNum個分の合計)
 				float measureStartBeat = measureLengths.Take(measureNum).Sum();
@@ -179,6 +185,23 @@ public class BmsLoader
 								break;
 						}
 					}
+					// 直接指定タイプのテンポ変化の場合
+					else if (dataType == DataType.DirectTempoChange)
+					{
+						// 16進数のBPMを10進数に変換
+						float tempo = Convert.ToInt32(objNum, 16);
+						// テンポ変化情報をtempoChangesに追加
+						tempoChanges.Add(new TempoChange(beat, tempo));
+					}
+					// インデックス指定タイプのテンポ変化の場合
+					else if (dataType == DataType.IndexedTempoChange)
+					{
+						// headerDataにある"BPMnn"というキーを持つ値を実数に変換
+						float tempo
+							= Convert.ToSingle(headerData["BPM" + objNum]);
+						// テンポ変化情報をtempoChangesに追加
+						tempoChanges.Add(new TempoChange(beat, tempo));
+					}
 				}
 			}
 		}
@@ -192,6 +215,24 @@ public class BmsLoader
 		{
 			// シングルノーツ
 			return DataType.SingleNote;
+		}
+		// チャンネルが02のとき
+		else if (channel == "02")
+		{
+			// 拍子変化
+			return DataType.MeasureChange;
+		}
+		// チャンネルが03のとき
+		else if (channel == "03")
+		{
+			// BPM直接指定型テンポ変化
+			return DataType.DirectTempoChange;
+		}
+		// チャンネルが08のとき
+		else if (channel == "08")
+		{
+			// BPMインデックス指定型BPM変化
+			return DataType.IndexedTempoChange;
 		}
 		// チャンネルの十の位が5のとき
 		else if (channel[0] == '5')
@@ -213,4 +254,7 @@ public enum DataType
 	Unsupported, // 未対応の種別
 	SingleNote, // シングルノーツ
 	LongNote, // ロングノーツ
+	DirectTempoChange, // BPM直接指定型テンポ変化
+	IndexedTempoChange, // BPMインデックス指定型BPM変化
+	MeasureChange // 拍子変化
 }
